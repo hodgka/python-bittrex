@@ -4,11 +4,18 @@
    See https://bittrex.com/Home/Api
 """
 
-import urllib
-import time
-import requests
-import hmac
+
 import hashlib
+import hmac
+import time
+
+import requests
+
+try:
+	from urllib.parse import urlencode
+except:
+	from urllib import urlencode
+
 
 BUY_ORDERBOOK = 'buy'
 SELL_ORDERBOOK = 'sell'
@@ -19,13 +26,15 @@ PUBLIC_SET = ['getmarkets', 'getcurrencies', 'getticker', 'getmarketsummaries', 
 
 MARKET_SET = ['getopenorders', 'cancel', 'sellmarket', 'selllimit', 'buymarket', 'buylimit']
 
-ACCOUNT_SET = ['getbalances', 'getbalance', 'getdepositaddress', 'withdraw', 'getorder', 'getorderhistory', 'getwithdrawalhistory', 'getdeposithistory']
+ACCOUNT_SET = ['getbalances', 'getbalance', 'getdepositaddress', 'withdraw',
+			   'getorder', 'getorderhistory', 'getwithdrawalhistory', 'getdeposithistory']
 
 
 class Bittrex(object):
 	"""
 	Used for requesting Bittrex with API key and API secret
 	"""
+
 	def __init__(self, api_key, api_secret):
 		self.api_key = str(api_key) if api_key is not None else ''
 		self.api_secret = str(api_secret) if api_secret is not None else ''
@@ -59,7 +68,7 @@ class Bittrex(object):
 		elif method in self.account_set:
 			request_url = (base_url % 'account') + method + '?apikey=' + self.api_key + "&nonce=" + nonce + '&'
 
-		request_url += urllib.urlencode(options)
+		request_url += urlencode(options)
 
 		signature = hmac.new(self.api_secret, request_url, hashlib.sha512).hexdigest()
 
@@ -117,7 +126,7 @@ class Bittrex(object):
 		:type market: str
 
 		:param depth_type: buy, sell or both to identify the type of orderbook to return.
-			Use constants BUY_ORDERBOOK, SELL_ORDERBOOK, BOTH_ORDERBOOK
+						Use constants BUY_ORDERBOOK, SELL_ORDERBOOK, BOTH_ORDERBOOK
 		:type depth_type: str
 
 		:param depth: how deep of an order book to retrieve. Max is 100, default is 20
@@ -161,7 +170,7 @@ class Bittrex(object):
 		:type quantity: float
 
 		:param rate: The rate at which to place the order.
-			This is not needed for market orders
+						This is not needed for market orders
 		:type rate: float
 
 		:return:
@@ -184,7 +193,7 @@ class Bittrex(object):
 		:type quantity: float
 
 		:param rate: The rate at which to place the order.
-			This is not needed for market orders
+						This is not needed for market orders
 		:type rate: float
 
 		:return:
@@ -207,7 +216,7 @@ class Bittrex(object):
 		:type quantity: float
 
 		:param rate: The rate at which to place the order.
-			This is not needed for market orders
+						This is not needed for market orders
 		:type rate: float
 
 		:return:
@@ -230,7 +239,7 @@ class Bittrex(object):
 		:type quantity: float
 
 		:param rate: The rate at which to place the order.
-			This is not needed for market orders
+						This is not needed for market orders
 		:type rate: float
 
 		:return:
@@ -339,7 +348,7 @@ class Bittrex(object):
 		"""
 		return self.api_query('getorder', {'uuid': uuid})
 
-	def get_order_history(self, market = ""):
+	def get_order_history(self, market=""):
 		"""
 		Used to retrieve your order history
 
@@ -352,8 +361,8 @@ class Bittrex(object):
 		:rtype : dict
 		"""
 		return self.api_query('getorderhistory', {"market": market})
-	
-	def get_withdrawal_history(self, currency = ""):
+
+	def get_withdrawal_history(self, currency=""):
 		"""
 		Used to retrieve your withdrawal history
 
@@ -367,7 +376,7 @@ class Bittrex(object):
 		"""
 		return self.api_query('getwithdrawalhistory', {"currency": currency})
 
-	def get_deposit_history(self, currency = ""):
+	def get_deposit_history(self, currency=""):
 		"""
 		Used to retrieve your deposit history
 
